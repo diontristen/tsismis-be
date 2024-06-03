@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  tsismis_mongodb:
+    image: mongo:4.4
+    ports:
+      - "27019:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes:
+      - mongodb_data:/data/db
+
+  tsismis_be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    depends_on:
+      - tsismis_mongodb
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      AVATAR_URL: ${AVATAR_URL}
+      APP_URL: ${APP_URL}
+
+volumes:
+  mongodb_data:
